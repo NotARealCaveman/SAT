@@ -11,13 +11,14 @@ FaceQuery Manifest_Simulation::QueryFaceDirection(const ConvexHull& hull0, const
 	face = start;
 	do
 	{
-		//transform plane to world space, Fb = FaM-1			
+		//transform plane to world space, Fb = Fa * Mb-1	
 		const MFplane planeA{ face->facePlane * Inverse(hull0.worldSpace) };
 		MFu32 vertexIndex;//might be used later for caching?
 		//express search direction in local space of hull1
+		//transform plane normal to local space, Na = Nb * Mb
 		const MFvec3 localDirection{ -planeA.Normal() * hull1.worldSpace };
 		const MFpoint3 vertexB{ FindFurthestPoint(hull1, localDirection,vertexIndex) };
-		const MFfloat distance{ Dot(planeA,vertexB) };		
+		const MFfloat distance{ Dot(planeA,vertexB) };
 		if (distance <= result.distance)
 			continue;
 		result = { face ,distance };
@@ -31,7 +32,7 @@ FaceQuery Manifest_Simulation::QueryFaceDirection(const ConvexHull& hull0, const
 EdgeQuery Manifest_Simulation::QueryEdgeDirection(const ConvexHull& hull0, const ConvexHull& hull1)
 {
 	// Find axis of minimum penetration
-	EdgeQuery result{ nullptr,nullptr ,-std::numeric_limits<MFfloat>::max() };
+	EdgeQuery result{ .distance = -std::numeric_limits<MFfloat>::max() };
 
 	for (HullHalfEdge const* const edge0 : hull0.mesh.edges)
 	{
@@ -71,10 +72,9 @@ void Manifest_Simulation::DeriveGaussMapping(const MFtransform& worldSpace, cons
 	edgeOrigin = worldSpace * ComponentMultiply(s,edge->tail->vertex);
 	MFpoint3 edgeDestination{ worldSpace * ComponentMultiply(s,edge->twin->tail->vertex) };
 	arcEdge = edgeDestination - edgeOrigin;
-
-	//vertexA = Normalize(CalculateFacePlane(edge->face)).Normal() * Inverse(worldSpace);
-	vertexA = Normalize(CalculateScaledFacePlane(edge->face, s)).Normal() * Inverse(worldSpace);
-	vertexB = Normalize(CalculateScaledFacePlane(edge->twin->face, s)).Normal() * Inverse(worldSpace);
+	 
+	vertexA = edge->face->facePlane.Normal() * Inverse(worldSpace);
+	vertexB = edge->twin->face->facePlane.Normal() * Inverse(worldSpace);
 }
 
 MFbool Manifest_Simulation::IsMinkowskiFace(const MFvec3& BxA, const MFvec3& DxC, const MFvec3& a, const MFvec3& b, const MFvec3& c, const MFvec3& d)
@@ -109,7 +109,7 @@ MFfloat Manifest_Simulation::Distance(const MFpoint3& origin0, const MFvec3& BxA
 	//DLOG({ CONSOLE_BLUE }, "L:", L,"MagnitudeSquared(BxA):", MagnitudeSquared(BxA),"MagnitudeSquared(DxC):", MagnitudeSquared(DxC),"kTolerance * std::sqrtf(MagnitudeSquared(BxA) * MagnitudeSquared(DxC)):", kTolerance * std::sqrtf(MagnitudeSquared(BxA) * MagnitudeSquared(DxC)));
 	if (L < kTolerance * std::sqrtf(MagnitudeSquared(BxA) * MagnitudeSquared(DxC)))
 	{
-		//DLOG({ CONSOLE_RED}, "returning:", -std::numeric_limits<MFfloat>::max());
+		DLOG({ CONSOLE_RED}, "edge returning distance:", -std::numeric_limits<MFfloat>::max());
 		return -std::numeric_limits<MFfloat>::max();
 	}
 

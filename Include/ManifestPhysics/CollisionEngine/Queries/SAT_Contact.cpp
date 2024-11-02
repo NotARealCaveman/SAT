@@ -27,8 +27,6 @@ FaceContact Manifest_Simulation::CreateFaceContact(const FaceQuery& faceQuery, c
 			}
 		} while ((potentialFace = potentialFace->next) != start);
 
-		//DLOG({ CONSOLE_GREEN }, "Incident face plane:", CalculateNormalizedFacePlane(result) * inverseIncidentWorld);
-
 		return result;
 	};
 
@@ -37,7 +35,6 @@ FaceContact Manifest_Simulation::CreateFaceContact(const FaceQuery& faceQuery, c
 	HullFace const* const referenceFace{ faceQuery.face };
 	const MFtransform inverseReferenceWorld{ Inverse(referenceHull.worldSpace) };
 	const MFplane referencePlane{ referenceFace->facePlane * inverseReferenceWorld };
-	//DLOG({ CONSOLE_ITALIC }, "Reference plane:", referencePlane);
 	HullFace const *const incidentFace { FindIncidentFace(referencePlane) };
 	
 	//collect incident edge vertices
@@ -53,31 +50,18 @@ FaceContact Manifest_Simulation::CreateFaceContact(const FaceQuery& faceQuery, c
 			incidentEdges.emplace_back(IncidentWorldSpace * localPoint);
 		} while ((edge = edge->next) != start);
 	}; 
-//	for (const auto& p : incidentEdges)
-	//	DLOG({ CONSOLE_CYAN }, "Incident Vertices", p);
+	//for (const auto& p : incidentEdges)
+		//DLOG({ CONSOLE_CYAN }, "Incident Vertices", p);
 
 	//clip incident edges against side planes of reference face
 	HullHalfEdge const* const start{ referenceFace->edge };
 	HullHalfEdge const* edge{ start };
 	do
 	{
-		if (edge->twin)
-		{
-			HullFace const* const referenceSideFace{ edge->face != referenceFace ? edge->face : edge->twin->face };
-			const MFplane referenceSidePlane{ referenceSideFace->facePlane * inverseReferenceWorld };
-			//DLOG({ CONSOLE_BOLD,CONSOLE_BG_RED }, "reference side plane:", (referenceSidePlane));
-			incidentEdges = Sutherland_Hodgman(referenceSidePlane, incidentEdges);
-		}
-		else
-		{
-			const MFpoint3 a{ edge->tail->vertex };
-			const MFpoint3 b{ edge->next->tail->vertex };
-			const MFvec3 direction{ b - a };
-			const MFvec3 edgeNormal{ Cross(direction,referencePlane.Normal()) };
-			const MFplane referenceSidePlane{ edgeNormal,-Dot(edgeNormal,a) };
-			//DLOG({ CONSOLE_BOLD,CONSOLE_BG_RED }, "reference side plane:", Normalize(referenceSidePlane));
-			incidentEdges = Sutherland_Hodgman(Normalize(referenceSidePlane), incidentEdges);
-		}
+		HullFace const* const referenceSideFace{ edge->face != referenceFace ? edge->face : edge->twin->face };
+		const MFplane referenceSidePlane{ referenceSideFace->facePlane * inverseReferenceWorld };
+		//DLOG({ CONSOLE_BOLD,CONSOLE_BG_RED }, "reference side plane:", (referenceSidePlane));
+		incidentEdges = Sutherland_Hodgman(referenceSidePlane, incidentEdges);
 	} while ((edge = edge->next) != start);
 	//for (const auto& p : incidentEdges)
 		//DLOG({ CONSOLE_MAGENTA }, "clipped Vertices", p);
@@ -120,28 +104,22 @@ void Manifest_Simulation::RefineContactPoints(const MFvec3& incidentScale, FaceC
 		std::numeric_limits<MFfloat>::min()
 	};
 	//first point - fixed search direction
-	//LOG({ CONSOLE_BG_MAGENTA,CONSOLE_BLACK }, "FINDING FIRST POINT");
 	for (const MFpoint3& potentialVertex : faceContact.vertices)
 	{
-		//DLOG({ CONSOLE_CYAN }, "Testing point:", potentialVertex);
 		const MFfloat projection{ Dot(INITIAL_SEARCH_DIRECTION,potentialVertex) };
 		if (projection > refinedDistances[0])
 		{
-			//DLOG({ CONSOLE_GREEN }, "Point sucessful! Updating distance and point:", projection, potentialVertex);
 			refinedPoints[0] = potentialVertex;
 			refinedDistances[0] = projection;
 		}
 	}
 	//second point - largest distance from point 1
-	//DLOG({ CONSOLE_BG_MAGENTA,CONSOLE_BLACK }, "FINDING SECOND POINT");
 	for (const MFpoint3& potentialVertex : faceContact.vertices)
 	{
-		//DLOG({ CONSOLE_RED }, "Testing point:", potentialVertex);
 		const MFvec3 searchDirection{ potentialVertex - refinedPoints[0] };
 		const MFfloat projection{ Dot(searchDirection,searchDirection) };
 		if (projection > refinedDistances[1])
 		{
-			//DLOG({ CONSOLE_GREEN }, "Point sucessful! Updating distance and point:", projection, potentialVertex);
 			refinedPoints[1] = potentialVertex;
 			refinedDistances[1] = projection;
 		}
@@ -149,54 +127,41 @@ void Manifest_Simulation::RefineContactPoints(const MFvec3& incidentScale, FaceC
 	HullFace const* const hullFace{ faceContact.query.face };
 	const MFvec3 faceNormal{ hullFace->facePlane.Normal() };
 	//third point - triangle area maximizing point 
-	//DLOG({ CONSOLE_BG_MAGENTA,CONSOLE_BLACK }, "FINDING THIRD POINT");
-
 	for (const MFpoint3& potentialVertex : faceContact.vertices)
 	{
-		//DLOG({ CONSOLE_BLUE }, "Testing point:", potentialVertex);
 		const MFvec3 triangleNormal{ Cross(refinedPoints[0] - potentialVertex,refinedPoints[1] - potentialVertex) };
 		const MFfloat windingArea{ Dot(triangleNormal, faceNormal) };
 		//positive winding is CCW 
 		if (windingArea > refinedDistances[2])
 		{
-			//DLOG({ CONSOLE_GREEN }, "Point sucessful! Updating winding area and point:", windingArea, potentialVertex);
 			refinedPoints[2] = potentialVertex;
 			refinedDistances[2] = windingArea;
 		}
 	}
 	//fourth point - quadrilateral area maximizing point
-	//DLOG({ CONSOLE_BG_MAGENTA,CONSOLE_BLACK }, "FINDING FOURTH POINT");
 	for (const MFpoint3& potentialVertex : faceContact.vertices)
 	{
-		//DLOG({ CONSOLE_YELLOW }, "Testing point:", potentialVertex);
-		//test ABQ
-		//DLOG({ CONSOLE_BG_WHITE, CONSOLE_BLACK}, "Testing triangle ABQ");
 		const MFvec3 normalABQ{ Cross(refinedPoints[0] - potentialVertex,refinedPoints[1] - potentialVertex) };
 		const MFfloat windingAreaABQ{ Dot(normalABQ, faceNormal) };
 		//negative is CW
 		if (windingAreaABQ < refinedDistances[3])
 		{
-			//DLOG({ CONSOLE_GREEN }, "Point sucessful! Updating widning area and point:", windingAreaABQ, potentialVertex);
 			refinedPoints[3] = potentialVertex;
 			refinedDistances[3] = windingAreaABQ;
 		}
 		//test BCQ
-		//DLOG({ CONSOLE_BG_WHITE, CONSOLE_BLACK }, "Testing triangle BCQ");
 		const MFvec3 normalBCQ{ Cross(refinedPoints[0] - potentialVertex,refinedPoints[1] - potentialVertex) };
 		const MFfloat windingAreaBCQ{ Dot(normalBCQ, faceNormal) };
 		if (windingAreaBCQ < refinedDistances[3])
 		{
-			//DLOG({ CONSOLE_GREEN }, "Point sucessful! Updating widning area and point:", windingAreaABQ, potentialVertex);
 			refinedPoints[3] = potentialVertex;
 			refinedDistances[3] = windingAreaBCQ;
 		}
 		//test CAQ
-		//DLOG({ CONSOLE_BG_WHITE, CONSOLE_BLACK }, "Testing triangle CAQ");
 		const MFvec3 normalCAQ{ Cross(refinedPoints[0] - potentialVertex,refinedPoints[1] - potentialVertex) };
 		const MFfloat windingAreaCAQ{ Dot(normalCAQ, faceNormal) };
 		if (windingAreaCAQ < refinedDistances[3])
 		{
-			//DLOG({ CONSOLE_GREEN }, "Point sucessful! Updating widning area and point:", windingAreaABQ, potentialVertex);
 			refinedPoints[3] = potentialVertex;
 			refinedDistances[3] = windingAreaCAQ;
 		}
@@ -209,7 +174,6 @@ ContactManifold* Manifest_Simulation::ConvertFaceContact(const MFvec3& reference
 {
 	ContactManifold& result{ contactManifolds.emplace_back() };
 		
-	//variant is hull face
 	HullFace const* const hullFace{contact.query.face };
 	result.normal = hullFace->facePlane.Normal();
 	ContactPoint contactPoint;
@@ -229,12 +193,12 @@ EdgeContact Manifest_Simulation::CreateEdgeContact(const EdgeQuery& edgeQuery, c
 	result.query = edgeQuery;
 
 	//compute closest points between two edges	
-	const MFpoint3 edgeA0{ hull0.worldSpace * edgeQuery.edgeA->tail->vertex };
-	const MFpoint3 edgeA1{ hull0.worldSpace * edgeQuery.edgeA->twin->tail->vertex };
+	const MFpoint3 edgeA0{ hull0.worldSpace * ComponentMultiply(hull0.scale,edgeQuery.edgeA->tail->vertex) };
+	const MFpoint3 edgeA1{ hull0.worldSpace * ComponentMultiply(hull0.scale,edgeQuery.edgeA->twin->tail->vertex) };
 	//variant is half edge
 	HullHalfEdge const* const edgeB{edgeQuery.edgeB };	
-	const MFpoint3 edgeB0{ hull1.worldSpace * edgeB->tail->vertex };
-	const MFpoint3 edgeB1{ hull1.worldSpace * edgeB->twin->tail->vertex };
+	const MFpoint3 edgeB0{ hull1.worldSpace * ComponentMultiply(hull1.scale,edgeB->tail->vertex) };
+	const MFpoint3 edgeB1{ hull1.worldSpace * ComponentMultiply(hull1.scale,edgeB->twin->tail->vertex) };
 
 
 	MFpoint3 L0, L1;

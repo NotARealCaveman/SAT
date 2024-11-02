@@ -10,17 +10,17 @@ namespace Manifest_Simulation
 
 	struct FaceQuery
 	{
-		HullFace const* face;
-		MFfloat distance;
-	};	
+		HullFace const* face{ nullptr };
+		MFfloat distance{ std::numeric_limits<MFfloat>::max() };
+	};
 	FaceQuery QueryFaceDirection(const ConvexHull& hull0, const ConvexHull& hul1l);
 
 	struct EdgeQuery
 	{
-		 HullHalfEdge const* edgeA;
-		 HullHalfEdge const* edgeB;
-		 MFfloat distance;
-	};	
+		HullHalfEdge const* edgeA{ nullptr };
+		HullHalfEdge const* edgeB{ nullptr };
+		MFfloat distance{ std::numeric_limits<MFfloat>::max() };
+	};
 		
 	EdgeQuery QueryEdgeDirection(const ConvexHull& hull0, const ConvexHull& hull1);
 	//derives vertices on unit sphere and the arcs between them
