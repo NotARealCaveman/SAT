@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\ManifestMath">
+      <UniqueIdentifier>{33678ca2-fb5f-4265-88f7-2eff2c0d37f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ManifestPhysics">
+      <UniqueIdentifier>{6328ac9c-abc1-48a4-9bf2-935b9d6769f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ManifestMath">
+      <UniqueIdentifier>{89778c05-3f00-4950-a8ef-0176ce006803}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ManifestPhysics">
+      <UniqueIdentifier>{77c69f3e-41bc-4b97-8906-b4da4ef49021}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ManifestPhysics\Colliders">
+      <UniqueIdentifier>{7ad0e3f7-dc87-407c-bf67-accd77ad967d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ManifestPhysics\Queries">
+      <UniqueIdentifier>{8f983073-a5a8-4128-85a4-3f0983a2bcea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ManifestPhysics\Colliders">
+      <UniqueIdentifier>{3337389b-8688-4d86-a187-2a0db5ade0a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ManifestPhysics\Queries">
+      <UniqueIdentifier>{c257f53c-aaed-4514-b0ba-d1dc52b88c13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ManifestUtility">
+      <UniqueIdentifier>{057cedfd-8faf-4a99-8aa2-c11995916b4c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestMath\CachedVertex.cpp">
+      <Filter>Source Files\ManifestMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestMath\Clipping.cpp">
+      <Filter>Source Files\ManifestMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestMath\HalfEdgeMesh.cpp">
+      <Filter>Source Files\ManifestMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestMath\Matrix3.cpp">
+      <Filter>Source Files\ManifestMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestMath\Matrix4.cpp">
+      <Filter>Source Files\ManifestMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestMath\Plane.cpp">
+      <Filter>Source Files\ManifestMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestMath\Point3.cpp">
+      <Filter>Source Files\ManifestMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestMath\Point4.cpp">
+      <Filter>Source Files\ManifestMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestMath\Quaternion.cpp">
+      <Filter>Source Files\ManifestMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestMath\Quickhull.cpp">
+      <Filter>Source Files\ManifestMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestMath\Transform.cpp">
+      <Filter>Source Files\ManifestMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestMath\Triangle.cpp">
+      <Filter>Source Files\ManifestMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestMath\Vector4.cpp">
+      <Filter>Source Files\ManifestMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestPhysics\CollisionEngine\Colliders\AxisAlignedBoxes.cpp">
+      <Filter>Source Files\ManifestPhysics\Colliders</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestPhysics\CollisionEngine\Colliders\ConvexHull.cpp">
+      <Filter>Source Files\ManifestPhysics\Colliders</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestPhysics\CollisionEngine\Queries\SAT.cpp">
+      <Filter>Source Files\ManifestPhysics\Queries</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestPhysics\CollisionEngine\Queries\SAT_Contact.cpp">
+      <Filter>Source Files\ManifestPhysics\Queries</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestPhysics\CollisionEngine\Queries\SAT_Query.cpp">
+      <Filter>Source Files\ManifestPhysics\Queries</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestPhysics\CollisionEngine\Queries\Support.cpp">
+      <Filter>Source Files\ManifestPhysics\Queries</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestPhysics\CollisionEngine\Collider.cpp">
+      <Filter>Source Files\ManifestPhysics</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestPhysics\CollisionEngine\ContactManifold.cpp">
+      <Filter>Source Files\ManifestPhysics</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestMath\Core.cpp">
+      <Filter>Source Files\ManifestMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestMath\Vector2.cpp">
+      <Filter>Source Files\ManifestMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\ManifestMath\Vector3.cpp">
+      <Filter>Source Files\ManifestMath</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\ManifestMath\CachedVertex.h">
+      <Filter>Header Files\ManifestMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestMath\Clipping.h">
+      <Filter>Header Files\ManifestMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestMath\HalfEdgeMesh.h">
+      <Filter>Header Files\ManifestMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestMath\Matrix3.h">
+      <Filter>Header Files\ManifestMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestMath\Matrix4.h">
+      <Filter>Header Files\ManifestMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestMath\Plane.h">
+      <Filter>Header Files\ManifestMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestMath\Point3.h">
+      <Filter>Header Files\ManifestMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestMath\Point4.h">
+      <Filter>Header Files\ManifestMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestMath\Quaternion.h">
+      <Filter>Header Files\ManifestMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestMath\Quickhull.h">
+      <Filter>Header Files\ManifestMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestMath\Simplex.h">
+      <Filter>Header Files\ManifestMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestMath\Transform.h">
+      <Filter>Header Files\ManifestMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestMath\Triangle.h">
+      <Filter>Header Files\ManifestMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestMath\Typenames.h">
+      <Filter>Header Files\ManifestMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestMath\Vector3.h">
+      <Filter>Header Files\ManifestMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestMath\Vector4.h">
+      <Filter>Header Files\ManifestMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestPhysics\CollisionEngine\Colliders\AxisAlignedBoxes.h">
+      <Filter>Header Files\ManifestPhysics\Colliders</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestPhysics\CollisionEngine\Colliders\ConvexHull.h">
+      <Filter>Header Files\ManifestPhysics\Colliders</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestPhysics\CollisionEngine\Queries\SAT.h">
+      <Filter>Header Files\ManifestPhysics\Queries</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestPhysics\CollisionEngine\Queries\SAT_Contact.h">
+      <Filter>Header Files\ManifestPhysics\Queries</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestPhysics\CollisionEngine\Queries\SAT_Query.h">
+      <Filter>Header Files\ManifestPhysics\Queries</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestPhysics\CollisionEngine\Queries\Support.h">
+      <Filter>Header Files\ManifestPhysics\Queries</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestPhysics\CollisionEngine\Collider.h">
+      <Filter>Header Files\ManifestPhysics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestUtility\Console_Color.h">
+      <Filter>Header Files\ManifestUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestUtility\DebugLogger.h">
+      <Filter>Header Files\ManifestUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestUtility\Typenames.h">
+      <Filter>Header Files\ManifestUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestPhysics\CollisionEngine\ContactManifold.h">
+      <Filter>Header Files\ManifestPhysics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestMath\Core.h">
+      <Filter>Header Files\ManifestMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestUtility\TypeAssist.h">
+      <Filter>Header Files\ManifestUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ManifestMath\Vector2.h">
+      <Filter>Header Files\ManifestMath</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
