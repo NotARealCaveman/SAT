@@ -90,8 +90,6 @@ MFbool Manifest_Simulation::IsMinkowskiFace(const MFvec3& BxA, const MFvec3& DxC
 	const MFbool intersectsDC{ halfSpaceADC * halfSpaceBDC < 0.0f };
 	//test both arcs lie on same hemisphere	
 	const MFbool sameHemisphere{ halfSpaceCBA * halfSpaceBDC > 0.0f };
-	//DLOG({ CONSOLE_YELLOW }, "halfSpaceCBA:", halfSpaceCBA, "halfSpaceDBA:", halfSpaceDBA, "halfSpaceADC:", halfSpaceADC,"halfSpaceBDC:", halfSpaceBDC);
-	//DLOG({ CONSOLE_MAGENTA }, "intersectsBA:", intersectsBA, "intersectsDC:", intersectsDC, "sameHemisphere:", sameHemisphere,"\n");
 
 	//bitwise fine over logical here, save comparisons 	
 	return  static_cast<MFbool>(intersectsBA & intersectsDC & sameHemisphere);
@@ -99,57 +97,20 @@ MFbool Manifest_Simulation::IsMinkowskiFace(const MFvec3& BxA, const MFvec3& DxC
 
 MFfloat Manifest_Simulation::Distance(const MFpoint3& origin0, const MFvec3& BxA, const MFpoint3& origin1, const MFvec3& DxC, const MFpoint3& translation0)
 {
-	// Build search direction
-	const MFvec3 E1_x_E2 = Cross(BxA, DxC);
-	//DLOG({ CONSOLE_GREEN }, "E1xE2:", E1_x_E2);
+	const MFvec3 E1_x_E2 = Cross(BxA, DxC); 
 	// Skip near parallel edges: |e1 x e2| = sin(alpha) * |e1| * |e2|
 	const MFfloat kTolerance = 0.005f;
 
-	const MFfloat L = Magnitude(E1_x_E2);
-	//DLOG({ CONSOLE_BLUE }, "L:", L,"MagnitudeSquared(BxA):", MagnitudeSquared(BxA),"MagnitudeSquared(DxC):", MagnitudeSquared(DxC),"kTolerance * std::sqrtf(MagnitudeSquared(BxA) * MagnitudeSquared(DxC)):", kTolerance * std::sqrtf(MagnitudeSquared(BxA) * MagnitudeSquared(DxC)));
+	const MFfloat L = Magnitude(E1_x_E2); 
 	if (L < kTolerance * std::sqrtf(MagnitudeSquared(BxA) * MagnitudeSquared(DxC)))
 	{
 		DLOG({ CONSOLE_RED}, "edge returning distance:", -std::numeric_limits<MFfloat>::max());
 		return -std::numeric_limits<MFfloat>::max();
 	}
 
-	// Assure consistent normal orientation (here: Hull1 -> Hull2)
+	// Assure consistent normal orientation (here: Hull0 -> Hull1)
 	MFvec3 N = E1_x_E2 / L;
 	if (Dot(N, origin0 - translation0) < 0.0f)
-		N = -N;
-	//DLOG({ CONSOLE_MAGENTA}, "N:", N);
-	// s = Dot(n, p2) - d = Dot(n, p2) - Dot(n, p1) = Dot(n, p2 - p1) 
-	//DLOG({ CONSOLE_CYAN }, "returning",N," * ",origin1-origin0,":", Dot(N, origin1 - origin0));
+		N = -N; 
 	return Dot(N, origin1 - origin0);
-}
-
-MFbool Manifest_Simulation::IntersectsWhenProjected(const ConvexHull& hull, const MFtriangle& triangle, const MFvec3& separatingAxis)
-{
-	MFfloat aMin{ std::numeric_limits<MFfloat>::max() };
-	MFfloat aMax{ std::numeric_limits<MFfloat>::min() };
-	MFfloat bMin{ aMin };
-	MFfloat bMax{ aMax };
-
-	// Define two intervals, a and b. Calculate their min and max values
-	HullVertex const* vertex{ hull.mesh.vertices };
-	do
-	{
-		const MFpoint3 localPoint{ ComponentMultiply(hull.scale,vertex->vertex) };
-		const MFpoint3 worldPoint{ hull.worldSpace * localPoint };
-		MFfloat aDist{ Dot(worldPoint, separatingAxis) };
-		aMin = std::fminf(aDist, aMin);
-		aMax = std::fmaxf(aDist, aMax);
-	} while ((vertex = vertex->next) != hull.mesh.vertices);
-	std::ranges::for_each(triangle.vertices, [&](const MFpoint3& vertex)
-		{
-			MFfloat bDist{ Dot(vertex, separatingAxis) };
-			bMin = std::fminf(bDist, bMin);
-			bMax = std::fmaxf(bDist, bMax);
-		});
-
-
-	// One-dimensional intersection test between a and b
-	MFfloat overlap{ std::fmax(0.0f, std::fminf(aMax, bMax) - std::fmaxf(aMin, bMin)) };
-
-	return overlap == 0.0f;
-}
+} 

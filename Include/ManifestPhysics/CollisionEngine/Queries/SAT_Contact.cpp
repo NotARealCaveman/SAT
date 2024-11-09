@@ -4,15 +4,15 @@ using namespace Manifest_Simulation;
 
 FaceContact Manifest_Simulation::CreateFaceContact(const FaceQuery& faceQuery, const ConvexHull& referenceHull, const ConvexHull& incidentHull)
 {
-	//unable to assign variant after creation?
 	FaceContact result;	
 	result.query = faceQuery;
 
+	const MFtransform inverseReferenceWorld{ Inverse(referenceHull.worldSpace) };
+	const MFtransform inverseIncidentWorld{ Inverse(incidentHull.worldSpace) };	
+
 	const auto& FindIncidentFace = [&](const MFplane& referencePlane)-> HullFace const *const
 	{
-		HullFace const * result{ nullptr };
-
-		const MFtransform inverseIncidentWorld{ Inverse(incidentHull.worldSpace) };
+		HullFace const * result{ nullptr };		
 		MFfloat currentPerpendicularProjection{ std::numeric_limits<MFfloat>::max() };
 		HullFace const *const start{ incidentHull.mesh.faces };
 		HullFace const * potentialFace{ start };
@@ -31,9 +31,7 @@ FaceContact Manifest_Simulation::CreateFaceContact(const FaceQuery& faceQuery, c
 	};
 
 	//find most anti parallel face to reference hull on incident hull
-	//variant is hull face
 	HullFace const* const referenceFace{ faceQuery.face };
-	const MFtransform inverseReferenceWorld{ Inverse(referenceHull.worldSpace) };
 	const MFplane referencePlane{ referenceFace->facePlane * inverseReferenceWorld };
 	HullFace const *const incidentFace { FindIncidentFace(referencePlane) };
 	
@@ -80,7 +78,7 @@ FaceContact Manifest_Simulation::CreateFaceContact(const FaceQuery& faceQuery, c
 		//DLOG({ CONSOLE_BLUE}, "refined Vertices", p);
 
 	//kinda suspect but lets leave it for now. i cant see anything obviously missing	
-	const MFplane incidentPlane{ incidentFace->facePlane * Inverse(incidentHull.worldSpace) };
+	const MFplane incidentPlane{ incidentFace->facePlane * inverseIncidentWorld };
 	result.vertices.erase(std::remove_if(result.vertices.begin(), result.vertices.end(), [&](MFpoint3& contactPoint)
 		{
 			return Dot(incidentPlane, contactPoint) > -0.001f;
@@ -100,8 +98,7 @@ void Manifest_Simulation::RefineContactPoints(const MFvec3& incidentScale, FaceC
 	{
 		-std::numeric_limits<MFfloat>::max(),
 		-std::numeric_limits<MFfloat>::max(),
-		std::numeric_limits<MFfloat>::min(),
-		std::numeric_limits<MFfloat>::min()
+		0,0
 	};
 	//first point - fixed search direction
 	for (const MFpoint3& potentialVertex : faceContact.vertices)
@@ -208,6 +205,8 @@ EdgeContact Manifest_Simulation::CreateEdgeContact(const EdgeQuery& edgeQuery, c
 	result.midPoint = (L0 + L1) * 0.5f;
 	//compute separating axis between two edges
 	result.separationAxis = Normalize(L0 - L1);
+	if (Dot(result.separationAxis, edgeA0 - hull0.worldSpace.GetTranslation()) < 0.0f)
+		result.separationAxis = -result.separationAxis;
 	return result;
 };
 

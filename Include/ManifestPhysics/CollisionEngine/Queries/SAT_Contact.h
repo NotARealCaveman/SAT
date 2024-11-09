@@ -24,11 +24,5 @@ namespace Manifest_Simulation
 	};
 
 	EdgeContact CreateEdgeContact(const EdgeQuery& edgeQuery, const ConvexHull& hull0, const ConvexHull& hull1);	
-	ContactManifold* ConvertEdgeContact(const EdgeContact& contact, std::vector<ContactManifold>& contactManifolds);
-
-	//CONVEX HULL VS CONVEX SNAP SHOT
-	struct FaceContact_Snapshot
-	{
-		FaceQuery faceQuery;
-	};
+	ContactManifold* ConvertEdgeContact(const EdgeContact& contact, std::vector<ContactManifold>& contactManifolds); 
 }
